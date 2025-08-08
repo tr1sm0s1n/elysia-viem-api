@@ -56,10 +56,16 @@ Start the application:
 bun run dev
 ```
 
+Listen for events (new terminal):
+
+```bash
+bun listen
+```
+
 Issue a certificate (new terminal):
 
 ```bash
-curl -X POST http://localhost:3000/issue -H "Content-Type: application/json" -d '{"id": 17, "name": "Shalom", "course": "MBCC", "grade": "S", "date": "30-05-25"}'
+curl -X POST http://localhost:3000/issue -H "Content-Type: application/json" -d '{"id": 14, "name": "Deren", "course": "MBCC", "grade": "S", "date": "30-05-25"}'
 ```
 
 Fetch a certificate:
