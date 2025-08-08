@@ -7,6 +7,7 @@
 		"test": "bunx hardhat test",
 		"deploy": "bunx hardhat ignition deploy ignition/modules/Cert.ts --network local",
 		"dev": "bun run --watch src/index.ts",
+		"listen": "bun run --watch src/listener.ts",
 		"fmt": "bunx biome format --write"
 	},
 	"devDependencies": {
