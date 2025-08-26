@@ -1,28 +1,30 @@
 {
-	"name": "elysia-viem-api",
-	"module": "src/index.ts",
-	"private": true,
-	"scripts": {
-		"node": "bunx hardhat node",
-		"test": "bunx hardhat test",
-		"deploy": "bunx hardhat ignition deploy ignition/modules/Cert.ts --network local",
-		"dev": "bun run --watch src/index.ts",
-		"listen": "bun run --watch src/listener.ts",
-		"fmt": "bunx biome format --write"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "latest",
+  "name": "elysia-viem-api",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "node": "bunx hardhat node",
+    "soltest": "bunx hardhat test solidity",
+    "nodetest": "bunx hardhat test nodejs",
+    "deploy": "bunx hardhat ignition deploy ignition/modules/Cert.ts --network local",
+    "dev": "bun run --watch src/index.ts",
+    "listen": "bun run --watch src/listener.ts",
+    "fmt": "bunx biome format --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "latest",
     "@nomicfoundation/hardhat-ignition": "latest",
-		"@nomicfoundation/hardhat-toolbox-viem": "latest",
-		"@types/bun": "latest",
+    "@nomicfoundation/hardhat-toolbox-viem": "latest",
+    "@types/bun": "latest",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
-		"hardhat": "latest"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
-	},
-	"dependencies": {
-		"elysia": "latest",
-		"viem": "latest"
-	}
+    "hardhat": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "elysia": "latest",
+    "viem": "latest"
+  }
 }
