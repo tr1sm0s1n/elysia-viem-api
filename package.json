@@ -12,8 +12,10 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "latest",
+    "@nomicfoundation/hardhat-ignition": "latest",
 		"@nomicfoundation/hardhat-toolbox-viem": "latest",
 		"@types/bun": "latest",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
 		"hardhat": "latest"
 	},
 	"peerDependencies": {
