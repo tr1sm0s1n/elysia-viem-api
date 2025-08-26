@@ -32,10 +32,16 @@ Install dependencies:
 bun install
 ```
 
-Test the contract:
+Run Solidity-based tests for the contract:
 
 ```bash
-bun test
+bun soltest
+```
+
+Run Node.js-based tests for the contract:
+
+```bash
+bun nodetest
 ```
 
 Run Hardhat simulated node on port **8545**:
@@ -65,11 +71,11 @@ bun listen
 Issue a certificate (new terminal):
 
 ```bash
-curl -X POST http://localhost:3000/issue -H "Content-Type: application/json" -d '{"id": 14, "name": "Deren", "course": "MBCC", "grade": "S", "date": "30-05-25"}'
+curl -X POST http://localhost:3000/issue -H "Content-Type: application/json" -d '{"id": 21, "name": "Shin", "course": "MBCC", "grade": "S", "date": "26-08-25"}'
 ```
 
 Fetch a certificate:
 
 ```bash
-curl http://localhost:3000/fetch/17
+curl http://localhost:3000/fetch/21
 ```
