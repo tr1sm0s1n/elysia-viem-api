@@ -1,77 +1,80 @@
-import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
-import { expect } from 'chai'
-import hre from 'hardhat'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { network } from 'hardhat'
 import { getCreateAddress, keccak256, toHex } from 'viem'
 
-describe('Cert', () => {
-	async function deployCertFixture() {
-		const [admin, other] = await hre.viem.getWalletClients()
-		const cert = await hre.viem.deployContract('Cert')
-		const client = await hre.viem.getPublicClient()
+describe('Cert', async () => {
+  const { viem, networkHelpers } = await network.connect()
 
-		return { cert, admin, other, client }
-	}
+  async function deployCertFixture() {
+    const [admin, other] = await viem.getWalletClients()
+    const cert = await viem.deployContract('Cert')
+    const client = await viem.getPublicClient()
 
-	it('Should set the right admin', async () => {
-		const { cert, admin } = await loadFixture(deployCertFixture)
+    return { cert, admin, other, client }
+  }
 
-		const contractAddress = getCreateAddress({
-			from: admin.account.address,
-			nonce: 0n,
-		})
+  it('Should set the right admin', async () => {
+    const { cert, admin } = await networkHelpers.loadFixture(deployCertFixture)
 
-		expect(cert.address).to.equal(contractAddress.toLowerCase())
-	})
+    const contractAddress = getCreateAddress({
+      from: admin.account.address,
+      nonce: 0n,
+    })
 
-	it('Should issue the certificate', async () => {
-		const { cert, client } = await loadFixture(deployCertFixture)
+    assert.equal(cert.address, contractAddress.toLowerCase())
+  })
 
-		const hash = await cert.write.issue([
-			14n,
-			'Deren',
-			'MBCC',
-			'S',
-			'30-05-2025',
-		])
-		await client.waitForTransactionReceipt({ hash })
+  it('Should issue the certificate', async () => {
+    const { cert, client } = await networkHelpers.loadFixture(deployCertFixture)
 
-		const event = await cert.getEvents.Issued()
+    const hash = await cert.write.issue([
+      14n,
+      'Deren',
+      'MBCC',
+      'S',
+      '30-05-2025',
+    ])
+    await client.waitForTransactionReceipt({ hash })
 
-		expect(event).to.have.lengthOf(1)
-		expect(event[0].args.course).to.equal(keccak256(toHex('MBCC')))
-		expect(event[0].args.id).to.equal(14n)
-		expect(event[0].args.grade).to.equal('S')
-	})
+    const event = await cert.getEvents.Issued()
 
-	it('Should read the certificate', async () => {
-		const { cert, client } = await loadFixture(deployCertFixture)
+    assert.equal(event.length, 1)
+    assert.equal(event[0].args.course, keccak256(toHex('MBCC')))
+    assert.equal(event[0].args.id, 14n)
+    assert.equal(event[0].args.grade, 'S')
+  })
 
-		const hash = await cert.write.issue([
-			885n,
-			'Shawn',
-			'MBCC',
-			'A',
-			'28-05-2025',
-		])
-		await client.waitForTransactionReceipt({ hash })
+  it('Should read the certificate', async () => {
+    const { cert, client } = await networkHelpers.loadFixture(deployCertFixture)
 
-		const certificate = await cert.read.Certificates([885n])
+    const hash = await cert.write.issue([
+      885n,
+      'Shawn',
+      'MBCC',
+      'A',
+      '28-05-2025',
+    ])
+    await client.waitForTransactionReceipt({ hash })
 
-		expect(certificate[0]).to.equal('Shawn')
-		expect(certificate[1]).to.equal('MBCC')
-		expect(certificate[2]).to.equal('A')
-		expect(certificate[3]).to.equal('28-05-2025')
-	})
+    const certificate = await cert.read.Certificates([885n])
 
-	it('Should revert the issuing', async () => {
-		const { cert, other } = await loadFixture(deployCertFixture)
+    assert.equal(certificate[0], 'Shawn')
+    assert.equal(certificate[1], 'MBCC')
+    assert.equal(certificate[2], 'A')
+    assert.equal(certificate[3], '28-05-2025')
+  })
 
-		const certWithOther = await hre.viem.getContractAt('Cert', cert.address, {
-			client: { wallet: other },
-		})
+  it('Should revert the issuing', async () => {
+    const { cert, other } = await networkHelpers.loadFixture(deployCertFixture)
 
-		await expect(
-			certWithOther.write.issue([355n, 'Lisa', 'MBCC', 'B', '31-05-2025']),
-		).to.be.rejectedWith('Access Denied')
-	})
+    const certWithOther = await viem.getContractAt('Cert', cert.address, {
+      client: { wallet: other },
+    })
+
+    await viem.assertions.revertWith(
+      certWithOther.write.issue([355n, 'Lisa', 'MBCC', 'B', '31-05-2025']),
+      'Access Denied'
+    )
+  })
 })
